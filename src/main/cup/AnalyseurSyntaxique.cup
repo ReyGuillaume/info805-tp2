@@ -58,36 +58,36 @@ program ::=
     ;
 
 // une sequence est une suite d'instructions separes par des point virgules 
-sequence ::= expression:e1 SEMI sequence:e2     {: RESULT = new Arbre(";", (Arbre)e1, (Arbre)e2); :}
+sequence ::= expression:e1 SEMI sequence:e2     {: RESULT = new Arbre(Arbre.SEMI, (Arbre)e1, (Arbre)e2); :}
             | expression:e                      {: RESULT = e; :}
             ;
 
 // une expession est soit une affectation ,une              
 expression ::= expr:e                                               {: RESULT = e; :}
-             | LET IDENT:nom EGAL expr:e                            {: RESULT = new Arbre("LET", new Arbre(nom), (Arbre)e); :}
-             | WHILE expr:cond DO expression:e                      {: RESULT = new Arbre("WHILE", (Arbre)cond, (Arbre)e); :}
-             | IF expr:cond THEN expression:a1 ELSE expression:a2   {: RESULT = new Arbre("IF", (Arbre)cond, new Arbre("THEN", (Arbre)a1, (Arbre)a2)); :}
+             | LET IDENT:nom EGAL expr:e                            {: RESULT = new Arbre(Arbre.LET, new Arbre(nom), (Arbre)e); :}
+             | WHILE expr:cond DO expression:e                      {: RESULT = new Arbre(Arbre.WHILE, (Arbre)cond, (Arbre)e); :}
+             | IF expr:cond THEN expression:a1 ELSE expression:a2   {: RESULT = new Arbre(Arbre.IF, (Arbre)cond, new Arbre(Arbre.THEN, (Arbre)a1, (Arbre)a2)); :}
              | error // reprise d'erreurs
              ;
 
 // expression arithmetiques et logiques 
 expr ::= NOT:op expr:e                  {: RESULT = new Arbre("!", (Arbre)e);; :} 
        | expr:e1 AND expr:e2            {: RESULT = new Arbre("&&", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 OR expr:e2             {: RESULT = new Arbre("||", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 EGAL expr:e2           {: RESULT = new Arbre("=", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 GT expr:e2             {: RESULT = new Arbre(">", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 GTE expr:e2            {: RESULT = new Arbre(">=", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 LT expr:e2             {: RESULT = new Arbre("<", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 LTE expr:e2            {: RESULT = new Arbre("<=", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 PLUS expr:e2           {: RESULT = new Arbre("+", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 MOINS expr:e2          {: RESULT = new Arbre("-", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 MUL expr:e2            {: RESULT = new Arbre("*", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 DIV expr:e2            {: RESULT = new Arbre("/", (Arbre)e1, (Arbre)e2); :} 
-       | expr:e1 MOD expr:e2            {: RESULT = new Arbre("%", (Arbre)e1, (Arbre)e2); :} 
-       | MOINS expr:e                   {: RESULT = new Arbre("-" + (Arbre)e); :} 
-       | OUTPUT expr:e                  {: RESULT = new Arbre("OUTPUT", (Arbre)e); :} 
-       | INPUT                          {: RESULT = new Arbre("INPUT"); :} 
-       | NIL                            {: RESULT = new Arbre("null"); :} 
+       | expr:e1 OR expr:e2             {: RESULT = new Arbre(Arbre.OR, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 EGAL expr:e2           {: RESULT = new Arbre(Arbre.EGAL, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 GT expr:e2             {: RESULT = new Arbre(Arbre.GT, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 GTE expr:e2            {: RESULT = new Arbre(Arbre.GTE, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 LT expr:e2             {: RESULT = new Arbre(Arbre.LT, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 LTE expr:e2            {: RESULT = new Arbre(Arbre.LTE, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 PLUS expr:e2           {: RESULT = new Arbre(Arbre.PLUS, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 MOINS expr:e2          {: RESULT = new Arbre(Arbre.MOINS, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 MUL expr:e2            {: RESULT = new Arbre(Arbre.MUL, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 DIV expr:e2            {: RESULT = new Arbre(Arbre.DIV, (Arbre)e1, (Arbre)e2); :} 
+       | expr:e1 MOD expr:e2            {: RESULT = new Arbre(Arbre.MOD, (Arbre)e1, (Arbre)e2); :} 
+       | MOINS expr:e                   {: RESULT = new Arbre(Arbre.MOINS + (Arbre)e); :} 
+       | OUTPUT expr:e                  {: RESULT = new Arbre(Arbre.OUTPUT, (Arbre)e); :} 
+       | INPUT                          {: RESULT = new Arbre(Arbre.INPUT); :} 
+       | NIL                            {: RESULT = new Arbre(Arbre.NULL); :} 
        | ENTIER:n                       {: RESULT = new Arbre(n.toString()); :} 
        | IDENT:id                       {: RESULT = new Arbre(id.toString()); :} 
        | PAR_G sequence:e PAR_D         {: RESULT = e; :} 
