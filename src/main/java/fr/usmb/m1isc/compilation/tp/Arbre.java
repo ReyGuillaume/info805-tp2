@@ -1,5 +1,10 @@
 package fr.usmb.m1isc.compilation.tp;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Arbre {
     public Arbre fg;
     public Arbre fd;
@@ -37,4 +42,26 @@ public class Arbre {
         }
     }
 
+    public String toCodeAssembleur() {
+        Set<String> s = new HashSet<String>();
+        toDataSegment(s);
+        String dataSegment = "DATA SEGMENT\n";
+        for (String val : s) {
+            dataSegment += "\t" + val + " DD\n";
+        }
+        dataSegment += "DATA ENDS\n";
+        return dataSegment;
+    }
+
+    public void toDataSegment(Set<String> s) {
+        if (fg == null || fd == null) {
+            return;
+        }
+        if (value == "LET") {
+            s.add(fg.value);
+        } else {
+            fg.toDataSegment(s);
+            fd.toDataSegment(s);
+        }
+    }
 }

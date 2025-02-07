@@ -16,7 +16,9 @@ public class Main {
 		@SuppressWarnings("deprecation")
 		parser p = new parser(yy);
 		Symbol s = p.parse();
-		((Arbre)s.value).afficher();;
-	}	
+		Arbre res = ((Arbre) s.value);
+		// res.afficher();
+		System.out.println(res.toCodeAssembleur());
+	}
 
 }
