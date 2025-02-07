@@ -1,7 +1,5 @@
 package fr.usmb.m1isc.compilation.tp;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
