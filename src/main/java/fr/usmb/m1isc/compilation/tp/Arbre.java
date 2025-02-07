@@ -4,6 +4,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Arbre {
+
+    public class BooleanWrapper {
+        private boolean value;
+
+        BooleanWrapper(boolean b) {
+            this.value = b;
+        }
+
+        public void setValue(boolean b) {
+            this.value = b;
+        }
+
+        public boolean getValue() {
+            return this.value;
+        }
+    }
+
     public Arbre fg;
     public Arbre fd;
     public String value;
@@ -70,18 +87,62 @@ public class Arbre {
             dataSegment += "\t" + val + " DD\n";
         }
         dataSegment += "DATA ENDS\n";
-        return dataSegment;
+
+        String codeSegment = "CODE SEGMENT\n";
+        codeSegment += toCodeSegment(new BooleanWrapper(false));
+        codeSegment += "CODE ENDS\n";
+        return dataSegment + codeSegment;
     }
 
     public void toDataSegment(Set<String> s) {
         if (fg == null || fd == null) {
             return;
         }
-        if (value == "LET") {
+        if (value == LET) {
             s.add(fg.value);
         } else {
             fg.toDataSegment(s);
             fd.toDataSegment(s);
+        }
+    }
+
+    public String toCodeSegment(BooleanWrapper eaxIsUsed) {
+        if (fg == null && fd == null) {
+            if (isNumeric(value)) {
+                String push = "";
+                if (eaxIsUsed.getValue()) {
+                    push = "\tpush eax\n";
+                }
+                eaxIsUsed.setValue(true);
+                return push + "\tmov eax, " + value + "\n";
+            }
+        }
+        if (value == SEMI) {
+            return fg.toCodeSegment(eaxIsUsed) + fd.toCodeSegment(eaxIsUsed);
+        }
+        if (value == LET) {
+            return fd.toCodeSegment(eaxIsUsed) +
+                    "\tmov " + fg.value + ", eax\n\tmov eax, " + fg.value + "\n";
+        }
+        if (value == MUL) {
+            return fg.toCodeSegment(eaxIsUsed) +
+                    fd.toCodeSegment(eaxIsUsed) + "\tpop ebx\n" +
+                    "\tmul eax, ebx\n";
+        }
+        if (value == DIV) {
+            return fg.toCodeSegment(eaxIsUsed) + fd.toCodeSegment(eaxIsUsed) +
+                    "\tpop ebx\n" +
+                    "\tdiv ebx, eax\n";
+        }
+        return "";
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }
