@@ -155,6 +155,12 @@ public class Arbre {
             ebxNeedToSwap.setValue(true);
             return div;
         }
+        if (value == INPUT) {
+            return "\tin eax\n";
+        }
+        if (value == OUTPUT) {
+            return "\tmov eax, " + fg.value + "\n\tout eax";
+        }
         return "";
     }
 
