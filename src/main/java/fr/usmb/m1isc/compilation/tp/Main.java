@@ -17,7 +17,7 @@ public class Main {
 		parser p = new parser(yy);
 		Symbol s = p.parse();
 		Arbre res = ((Arbre) s.value);
-		// res.afficher();
+		res.afficher();
 		System.out.println(res.toCodeAssembleur());
 	}
 

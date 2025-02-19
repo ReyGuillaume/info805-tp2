@@ -120,11 +120,19 @@ public class Arbre {
                 eaxIsUsed.setValue(true);
                 return push + "\tmov eax, " + value + "\n";
             } else {
-                return "\tmov eax, " + value + "\n";
+                String push = "";
+                if (eaxIsUsed.getValue()) {
+                    push = "\tpush eax\n";
+                }
+                eaxIsUsed.setValue(true);
+                return push + "\tmov eax, " + value + "\n";
             }
         }
         if (value == SEMI) {
-            return fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            String fgCode = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            eaxIsUsed.setValue(false);
+            String fdCode = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            return fgCode + fdCode;
         }
         if (value == LET) {
             String executeCode = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
