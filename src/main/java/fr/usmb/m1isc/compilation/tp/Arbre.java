@@ -157,10 +157,6 @@ public class Arbre {
             return codeCondition + codeExecution + codeSortie;
         }
 
-        if (value == MOD) {
-            return "\tMODULO\n";
-        }
-
         if (value == LT) {
             String codeGauche = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             String codeDroite = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
@@ -175,6 +171,7 @@ public class Arbre {
             String fdCode = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             return fgCode + fdCode;
         }
+
         if (value == LET) {
             String executeCode = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             if (ebxNeedToSwap.getValue()) {
@@ -184,17 +181,38 @@ public class Arbre {
                 return executeCode + "\tmov " + fg.value + ", eax\n";
             }
         }
+
         if (value == MUL) {
             return fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
                     fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\tpop ebx\n" +
                     "\tmul eax, ebx\n";
         }
+
         if (value == DIV) {
             String div = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
                     "\tpop ebx\n" +
                     "\tdiv ebx, eax\n";
             ebxNeedToSwap.setValue(true);
             return div;
+        }
+
+        if (value == MOD) {
+            return "\tmov eax, " + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
+                    + "\tpush eax\n"
+                    + "\tmov eax, " + fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
+                    + "\tpop ebx\n"
+                    + "\tmov ecx,eax\n"
+                    + "\tdiv ecx,ebx\n"
+                    + "\tmul ecx,ebx\n"
+                    + "\tsub eax,ecx\n";
+        }
+
+        if (value == INPUT) {
+            return "\tin eax\n";
+        }
+
+        if (value == OUTPUT) {
+            return "\tmov eax, " + fg.value + "\n\tout eax";
         }
 
         return "";
