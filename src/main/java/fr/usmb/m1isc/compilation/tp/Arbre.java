@@ -183,10 +183,24 @@ public class Arbre {
             }
         }
 
+        if (value == PLUS) {
+            return fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
+                    fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\tpop ebx\n" +
+                    "\tadd eax, ebx\n";
+        }
+
         if (value == MUL) {
             return fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
                     fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\tpop ebx\n" +
                     "\tmul eax, ebx\n";
+        }
+
+        if (value == MOINS) {
+            String div = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
+                    "\tpop ebx\n" +
+                    "\tsub ebx, eax\n";
+            ebxNeedToSwap.setValue(true);
+            return div;
         }
 
         if (value == DIV) {
