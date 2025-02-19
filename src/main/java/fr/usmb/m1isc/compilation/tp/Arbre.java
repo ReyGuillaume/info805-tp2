@@ -123,6 +123,14 @@ public class Arbre {
     }
 
     public String toCodeSegment(BooleanWrapper eaxIsUsed, BooleanWrapper ebxNeedToSwap) {
+        if (value == INPUT) {
+            System.out.println("INPUT EST LA");
+            return "\tin eax\n";
+        }
+        if (value == OUTPUT) {
+            return "\tmov eax, " + fg.value + "\n\tout eax\n";
+        }
+
         if (fg == null && fd == null) {
             if (isNumeric(value)) {
                 String push = "";
@@ -142,7 +150,7 @@ public class Arbre {
         }
 
         if (fg.getValue() == WHILE) {
-            String codeCondition = "debut_while_1:" + fg.getFG().toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            String codeCondition = "debut_while_1:\n" + fg.getFG().toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             String codeExecution = "\tjz sortie_while_1\n" + fg.getFD().toCodeSegment(eaxIsUsed, ebxNeedToSwap)
                     + "\tjmp debut_while_1\n";
             String codeSortie = "sortie_while_1:\n" + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
@@ -150,14 +158,14 @@ public class Arbre {
         }
 
         if (value == MOD) {
-            return "MODULO";
+            return "\tMODULO\n";
         }
 
         if (value == LT) {
             String codeGauche = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             String codeDroite = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             String codeDeComparaison = "\tpop ebx\n" + "\tsub eax,ebx\n" + "\tjle faux_gt_1\n" + "\tmove eax,1\n"
-                    + "\tjmp sortie_gt_1\n" + "faux_gt_1:\n\tmov eax,0\nsortie_gt_1";
+                    + "\tjmp sortie_gt_1\n" + "faux_gt_1:\n\tmov eax,0\nsortie_gt_1:\n";
             return codeGauche + codeDroite + codeDeComparaison;
         }
 
@@ -188,12 +196,7 @@ public class Arbre {
             ebxNeedToSwap.setValue(true);
             return div;
         }
-        if (value == INPUT) {
-            return "\tin eax\n";
-        }
-        if (value == OUTPUT) {
-            return "\tmov eax, " + fg.value + "\n\tout eax";
-        }
+
         return "";
     }
 
