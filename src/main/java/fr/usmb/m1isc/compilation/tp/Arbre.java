@@ -155,6 +155,16 @@ public class Arbre {
             ebxNeedToSwap.setValue(true);
             return div;
         }
+        if (value == MOD) {
+            return "\tmov eax, " + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
+            + "\tpush eax\n"
+            + "\tmov eax, " + fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
+            + "\tpop ebx\n"
+            + "\tmov ecx,eax\n"
+            + "\tdiv ecx,ebx\n"
+            + "\tmul ecx,ebx\n"
+            + "\tsub eax,ecx\n";
+        }
         if (value == INPUT) {
             return "\tin eax\n";
         }
