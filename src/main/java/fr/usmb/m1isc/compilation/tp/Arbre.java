@@ -151,6 +151,7 @@ public class Arbre {
 
         if (fg.getValue() == WHILE) {
             String codeCondition = "debut_while_1:\n" + fg.getFG().toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            eaxIsUsed.setValue(false);
             String codeExecution = "\tjz sortie_while_1\n" + fg.getFD().toCodeSegment(eaxIsUsed, ebxNeedToSwap)
                     + "\tjmp debut_while_1\n";
             String codeSortie = "sortie_while_1:\n" + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
@@ -197,9 +198,8 @@ public class Arbre {
         }
 
         if (value == MOD) {
-            return "\tmov eax, " + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
-                    + "\tpush eax\n"
-                    + "\tmov eax, " + fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap) + "\n"
+            return fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap) +
+                    fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap)
                     + "\tpop ebx\n"
                     + "\tmov ecx,eax\n"
                     + "\tdiv ecx,ebx\n"
