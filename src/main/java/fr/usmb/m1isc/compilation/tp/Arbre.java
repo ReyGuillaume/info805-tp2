@@ -124,7 +124,6 @@ public class Arbre {
 
     public String toCodeSegment(BooleanWrapper eaxIsUsed, BooleanWrapper ebxNeedToSwap) {
         if (value == INPUT) {
-            System.out.println("INPUT EST LA");
             return "\tin eax\n";
         }
         if (value == OUTPUT) {
