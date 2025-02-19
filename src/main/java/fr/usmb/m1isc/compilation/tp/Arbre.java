@@ -33,7 +33,7 @@ public class Arbre {
     public static final String INPUT = "INPUT";
     public static final String OUTPUT = "OUTPUT";
     public static final String MOINS = "-";
-    public static final String MOD = "";
+    public static final String MOD = "%";
     public static final String DIV = "/";
     public static final String MUL = "*";
     public static final String PLUS = "+";
@@ -62,6 +62,18 @@ public class Arbre {
         this.value = value;
         this.fd = null;
         this.fg = null;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public Arbre getFG() {
+        return this.fg;
+    }
+
+    public Arbre getFD() {
+        return this.fd;
     }
 
     public void afficher() {
@@ -128,6 +140,27 @@ public class Arbre {
                 return push + "\tmov eax, " + value + "\n";
             }
         }
+
+        if (fg.getValue() == WHILE) {
+            String codeCondition = "debut_while_1:" + fg.getFG().toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            String codeExecution = "\tjz sortie_while_1\n" + fg.getFD().toCodeSegment(eaxIsUsed, ebxNeedToSwap)
+                    + "\tjmp debut_while_1\n";
+            String codeSortie = "sortie_while_1:\n" + fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            return codeCondition + codeExecution + codeSortie;
+        }
+
+        if (value == MOD) {
+            return "MODULO";
+        }
+
+        if (value == LT) {
+            String codeGauche = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            String codeDroite = fd.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
+            String codeDeComparaison = "\tpop ebx\n" + "\tsub eax,ebx\n" + "\tjle faux_gt_1\n" + "\tmove eax,1\n"
+                    + "\tjmp sortie_gt_1\n" + "faux_gt_1:\n\tmov eax,0\nsortie_gt_1";
+            return codeGauche + codeDroite + codeDeComparaison;
+        }
+
         if (value == SEMI) {
             String fgCode = fg.toCodeSegment(eaxIsUsed, ebxNeedToSwap);
             eaxIsUsed.setValue(false);
